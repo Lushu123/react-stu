@@ -26,10 +26,10 @@ const Slider = (props) => {
   return (
     <SliderContainer>
       <div className="slider-container">
-        <div className="slider-wrapper">
+        <div className="swiper-wrapper">
           {
-            bannerList.map(slider => (
-              <div className="swiper-slide" key={slider.imageUrl}>
+            bannerList.map((slider, index) => (
+              <div className="swiper-slide" key={slider.imageUrl + index}>
                 <div className="slider-nav">
                   <img src={slider.imageUrl} width="100%" height="100%" alt="推荐" />
                 </div>
