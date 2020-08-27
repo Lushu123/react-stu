@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swiper from 'swiper';
 import "swiper/dist/css/swiper.css";
-import { SliderContainer } from './style';
+import { SliderContainer } from './style'
 
 
 const Slider = (props) => {
@@ -25,6 +25,7 @@ const Slider = (props) => {
 
   return (
     <SliderContainer>
+      <div className="before"></div>
       <div className="slider-container">
         <div className="swiper-wrapper">
           {
@@ -39,6 +40,8 @@ const Slider = (props) => {
         </div>
         <div className="swiper-pagination"></div>
       </div>
+
+
     </SliderContainer>
 
   );
