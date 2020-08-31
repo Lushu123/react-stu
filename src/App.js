@@ -18,6 +18,7 @@ function App() {
       <HashRouter>
       <GlobalStyle></GlobalStyle>
       <IconStyle></IconStyle>
+      {/* renderRoutes(routes)会把routers作为props传入到Home组件中 */}
       {renderRoutes(routes)}
     </HashRouter>
     </Provider>
