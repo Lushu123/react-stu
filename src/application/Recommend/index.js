@@ -4,12 +4,14 @@ import Scroll from '../../baseUI/scroll';
 import RecommendList from '../../components/list';
 import { Content } from './style';
 import { forceCheck } from 'react-lazyload';
+import Loading from '../../baseUI/loading/index';
 //redux
 import { connect } from "react-redux";
 import { actionCreators as actionTypes } from './store';
 
 const Recommend = (props) => {
-  const { bannerList, recommendList } = props;
+  const { bannerList, recommendList, enterLoading } = props;
+  console.log(enterLoading);
 
   const { getBannerDataDispatch, getRecommendListDataDispatch } = props;
 
@@ -27,6 +29,7 @@ const Recommend = (props) => {
   const recommendListJS = recommendList ? recommendList.toJS() : [];
 
 
+
   const scrollRef = useRef();
   return (
     <Content>
@@ -36,6 +39,7 @@ const Recommend = (props) => {
           <RecommendList recommendList={recommendListJS}></RecommendList>
         </div>
       </Scroll>
+      {enterLoading ? <Loading></Loading> : null}
     </Content>
   )
 }
@@ -46,6 +50,7 @@ const mapStateToProps = (state) => ({
   // 不然每次 diff 比对 props 的时候都是不一样的引用，还是导致不必要的重渲染，属于滥用 immutable
   bannerList: state.getIn(['recommend', 'bannerList']),
   recommendList: state.getIn(['recommend', 'recommendList']),
+  enterLoading: state.getIn(['recommend', 'enterLoading'])
 });
 // 映射 dispatch 到 props 上
 const mapDispatchToProps = (dispatch) => {
