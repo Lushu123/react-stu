@@ -9,9 +9,9 @@ const loading = keyframes`
   50% {
     transform: scale(1.0);
   }
-`
+`;
 const LoadingWrapper = styled.div`
-  >div {
+  > div {
     position: fixed;
     z-index: 1000;
     left: 0; 
@@ -29,7 +29,7 @@ const LoadingWrapper = styled.div`
   >div:nth-child (2) {
     animation-delay: -0.7s;
   }
-`
+`;
 
 function Loading() {
   return (

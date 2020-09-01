@@ -11,7 +11,6 @@ import { actionCreators as actionTypes } from './store';
 
 const Recommend = (props) => {
   const { bannerList, recommendList, enterLoading } = props;
-  console.log(enterLoading);
 
   const { getBannerDataDispatch, getRecommendListDataDispatch } = props;
 
