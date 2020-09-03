@@ -3,6 +3,8 @@ import Horizen from '../../baseUI/horizen-item';
 import Scroll from '../../baseUI/scroll'
 import { categoryTypes, alphaTypes } from '../../api/config';
 import { NavContainer, List, ListItem, ListContainer } from "./style";
+import LazyLoad, { forceCheck } from 'react-lazyload';
+import Loading from '../../baseUI/loading';
 
 import { connect } from 'react-redux';
 import {
@@ -52,6 +54,14 @@ const Singers = (props) => {
     setCategory(val);
     updateDispatch(val, alpha);
   }
+
+  const handlePullUp = () => {
+    pullUpRefreshDispatch(category, alpha, category === '', pageCount);
+  };
+
+  const handlePullDown = () => {
+    pullDownRefreshDispatch(category, alpha);
+  };
   const renderSingerList = () => {
     return (
       <List>
@@ -79,9 +89,14 @@ const Singers = (props) => {
         handleClick={val => handleUpdateAlpha(val)}
         oldVal={alpha}></Horizen>
       <ListContainer>
-        <Scroll>
+        <Scroll pullUp={handlePullUp}
+          pullDown={handlePullDown}
+          pullUpLoading={pullUpLoading}
+          pullDownLoading={pullDownLoading}
+          onScroll={forceCheck}>
           {renderSingerList()}
         </Scroll>
+        <Loading show={enterLoading}></Loading>
       </ListContainer>
     </NavContainer>
   )
