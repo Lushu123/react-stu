@@ -1,13 +1,18 @@
-import React, { forwardRef, useEffect, useState, useRef, useImperativeHandle } from 'react'
-import PropTypes from 'prop-types';
 import BScroll from 'better-scroll';
-import styled from 'styled-components'
-
+import PropTypes from 'prop-types';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import styled from 'styled-components';
 
 const ScrollContainer = styled.div`
-  width:100%;
-  height:100%;
-  overflow:hidden;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 `;
 
 const Scroll = forwardRef((props, ref) => {
@@ -18,19 +23,19 @@ const Scroll = forwardRef((props, ref) => {
   const { pullUp, pullDown, onScroll } = props;
   useEffect(() => {
     const scroll = new BScroll(scrollContaninerRef.current, {
-      scrollX: direction === "horizental",
-      scrollY: direction === "vertical",
+      scrollX: direction === 'horizental',
+      scrollY: direction === 'vertical',
       probeType: 3,
       click: click,
       bounce: {
         top: bounceTop,
-        bottom: bounceBottom
-      }
+        bottom: bounceBottom,
+      },
     });
     setBScroll(scroll);
     return () => {
       setBScroll(null);
-    }
+    };
     //eslint-disable-next-line
   }, []);
 
@@ -38,10 +43,10 @@ const Scroll = forwardRef((props, ref) => {
     if (!bScroll || !onScroll) return;
     bScroll.on('scroll', (scroll) => {
       onScroll(scroll);
-    })
+    });
     return () => {
       bScroll.off('scroll');
-    }
+    };
   }, [onScroll, bScroll]);
 
   useEffect(() => {
@@ -54,7 +59,7 @@ const Scroll = forwardRef((props, ref) => {
     });
     return () => {
       bScroll.off('scrollEnd');
-    }
+    };
   }, [pullUp, bScroll]);
 
   useEffect(() => {
@@ -67,9 +72,8 @@ const Scroll = forwardRef((props, ref) => {
     });
     return () => {
       bScroll.off('touchEnd');
-    }
+    };
   }, [pullDown, bScroll]);
-
 
   useEffect(() => {
     if (refresh && bScroll) {
@@ -88,30 +92,29 @@ const Scroll = forwardRef((props, ref) => {
       if (bScroll) {
         return bScroll;
       }
-    }
+    },
   }));
-
 
   return (
     <ScrollContainer ref={scrollContaninerRef}>
       {props.children}
     </ScrollContainer>
   );
-})
+});
 
 Scroll.propTypes = {
   direction: PropTypes.oneOf(['vertical', 'horizental']),
   click: true,
   refresh: PropTypes.bool,
-  onScorll: PropTypes.func,
+  onScroll: PropTypes.func,
   pullUp: PropTypes.func,
   pullDown: PropTypes.func,
   pullUpLoading: PropTypes.bool,
   bounceTop: PropTypes.bool,
-  bouceBottom: PropTypes.bool,
+  bounceBottom: PropTypes.bool,
 };
 Scroll.defaultProps = {
-  direction: "vertical",
+  direction: 'vertical',
   click: true,
   refresh: true,
   onScroll: null,
@@ -120,7 +123,7 @@ Scroll.defaultProps = {
   pullUp: null,
   pullDown: null,
   bounceTop: true,
-  bounceBottom: true
+  bounceBottom: true,
 };
 
-export default React.memo(Scroll)
+export default React.memo(Scroll);
