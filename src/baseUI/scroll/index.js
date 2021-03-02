@@ -8,7 +8,8 @@ import React, {
   useState,
 } from 'react';
 import styled from 'styled-components';
-
+import LoadingV2 from '../loading-v2/index';
+import Loading from '../loading/index';
 const ScrollContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -18,7 +19,15 @@ const ScrollContainer = styled.div`
 const Scroll = forwardRef((props, ref) => {
   const [bScroll, setBScroll] = useState();
   const scrollContaninerRef = useRef();
-  const { direction, click, refresh, bounceTop, bounceBottom } = props;
+  const {
+    direction,
+    click,
+    refresh,
+    bounceTop,
+    bounceBottom,
+    pullUpLoading,
+    pullDownLoading,
+  } = props;
 
   const { pullUp, pullDown, onScroll } = props;
   useEffect(() => {
@@ -95,9 +104,22 @@ const Scroll = forwardRef((props, ref) => {
     },
   }));
 
+  const PullUpdisplayStyle = pullUpLoading
+    ? { display: '' }
+    : { display: 'none' };
+  const PullDowndisplayStyle = pullDownLoading
+    ? { display: '' }
+    : { display: 'none' };
   return (
     <ScrollContainer ref={scrollContaninerRef}>
       {props.children}
+      <div style={PullUpdisplayStyle}>
+        <Loading></Loading>
+      </div>
+      {/* 顶部下拉刷新动画 */}
+      <div style={PullDowndisplayStyle}>
+        <LoadingV2></LoadingV2>
+      </div>
     </ScrollContainer>
   );
 });

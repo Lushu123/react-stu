@@ -31,12 +31,16 @@ const LoadingWrapper = styled.div`
   }
 `;
 
-function Loading() {
+function Loading({ show }) {
   return (
-    <LoadingWrapper>
-      <div></div>
-      <div></div>
-    </LoadingWrapper>
+    <>
+      {show && (
+        <LoadingWrapper>
+          <div></div>
+          <div></div>
+        </LoadingWrapper>
+      )}
+    </>
   );
 }
 

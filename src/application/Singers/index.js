@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import Horizen from '../../baseUI/horizen-item';
-import Scroll from '../../baseUI/scroll'
-import { categoryTypes, alphaTypes } from '../../api/config';
-import { NavContainer, List, ListItem, ListContainer } from "./style";
-import LazyLoad, { forceCheck } from 'react-lazyload';
-import Loading from '../../baseUI/loading';
-
+import React, { useEffect, useState } from 'react';
+import { forceCheck } from 'react-lazyload';
 import { connect } from 'react-redux';
+import { alphaTypes, areaTypes, singerTypes } from '../../api/config';
+import Horizen from '../../baseUI/horizen-item';
+import Loading from '../../baseUI/loading';
+import Scroll from '../../baseUI/scroll';
 import {
-  getSingerList,
-  getHotSingerList,
   changeEnterLoading,
   changePageCount,
-  refreshMoreSingerList,
-  changePullUpLoading,
   changePullDownLoading,
-  refreshMoreHotSingerList
+  changePullUpLoading,
+  getHotSingerList,
+  getSingerList,
+  refreshMoreHotSingerList,
+  refreshMoreSingerList,
 } from './store/actionCreators';
+import { List, ListContainer, ListItem, NavContainer } from './style';
 
 const Singers = (props) => {
-  const [category, setCategory] = useState('');
-  const [alpha, setAlpha] = useState('');
+  const [type, setType] = useState('');
+  const [area, setArea] = useState('');
+  const [initial, setInitial] = useState('');
 
   const {
     singerList,
@@ -37,109 +37,132 @@ const Singers = (props) => {
   } = props;
 
   useEffect(() => {
-    getHotSingerDispatch()
+    getHotSingerDispatch();
   }, []);
 
+  useEffect(() => {}, [pageCount]);
+
   useEffect(() => {
+    if (!isHot()) {
+      updateDispatch(type, area, initial);
+    }
+  }, [type, area, initial]);
 
-  }, [pageCount]);
+  // const handleUpdateAlpha = (val) => {
+  //   setAlpha(val);
+  //   updateDispatch(type, val);
+  // };
 
-
-  const handleUpdateAlpha = (val) => {
-    setAlpha(val);
-    updateDispatch(category, val);
-  }
-
-  const handleUpdateCatetory = (val) => {
-    setCategory(val);
-    updateDispatch(val, alpha);
-  }
+  // const handleUpdateCategory = (val) => {
+  //   setCategory(val);
+  //   updateDispatch(val, initial);
+  // };
 
   const handlePullUp = () => {
-    pullUpRefreshDispatch(category, alpha, category === '', pageCount);
+    pullUpRefreshDispatch(type, area, initial, pageCount + 1, isHot());
   };
 
   const handlePullDown = () => {
-    pullDownRefreshDispatch(category, alpha);
+    pullDownRefreshDispatch(type, area, initial, isHot());
+  };
+  const isHot = () => {
+    return !(type || area || initial);
   };
   const renderSingerList = () => {
     return (
       <List>
-        {
-          singerList.toJS().map((item, index) => (
-            <ListItem key={item.accountId + '' + index}>
-              <div className="img_wrapper">
-                <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music" />
-              </div>
-              <span className="name">{item.name}</span>
-            </ListItem>
-          ))
-        }
+        {singerList.toJS().map((item, index) => (
+          <ListItem key={item.accountId + '' + index}>
+            <div className="img_wrapper">
+              <img
+                src={`${item.picUrl}?param=300x300`}
+                width="100%"
+                height="100%"
+                alt="music"
+              />
+            </div>
+            <span className="name">{item.name}</span>
+          </ListItem>
+        ))}
       </List>
-    )
-  }
+    );
+  };
   return (
     <NavContainer>
-      <Horizen list={categoryTypes}
-        title={"分类 (默认热门):"}
-        handleClick={handleUpdateCatetory}
-        oldVal={category}></Horizen>
-      <Horizen list={alphaTypes}
-        title={"首字母:"}
-        handleClick={val => handleUpdateAlpha(val)}
-        oldVal={alpha}></Horizen>
+      <Horizen
+        list={singerTypes}
+        title={'分类 (默认热门):'}
+        handleClick={(val) => setType(val)}
+        oldVal={type}
+      />
+      <Horizen
+        list={areaTypes}
+        title={'地区:'}
+        handleClick={(val) => setArea(val)}
+        oldVal={area}
+      />
+      <Horizen
+        list={alphaTypes}
+        title={'首字母:'}
+        handleClick={(val) => setInitial(val)}
+        oldVal={initial}
+      />
       <ListContainer>
-        <Scroll pullUp={handlePullUp}
+        <Scroll
+          pullUp={handlePullUp}
           pullDown={handlePullDown}
           pullUpLoading={pullUpLoading}
           pullDownLoading={pullDownLoading}
-          onScroll={forceCheck}>
+          onScroll={forceCheck}
+        >
           {renderSingerList()}
         </Scroll>
-        <Loading show={enterLoading}></Loading>
+        <Loading show={enterLoading} />
       </ListContainer>
     </NavContainer>
-  )
-
-}
+  );
+};
 
 const mapStateToProps = (state) => ({
   singerList: state.getIn(['singers', 'singerList']),
   enterLoading: state.getIn(['singers', 'enterLoading']),
   pullUpLoading: state.getIn(['singers', 'pullUpLoading']),
   pullDownLoading: state.getIn(['singers', 'pullDownLoading']),
-  pageCount: state.getIn(['singers', 'pageCount'])
+  pageCount: state.getIn(['singers', 'pageCount']),
 });
 const mapDispatchToProps = (dispatch) => {
   return {
     getHotSingerDispatch() {
       dispatch(getHotSingerList());
     },
-    updateDispatch(category, alpha) {
-      dispatch(changePageCount(0));//由于改变了分类，所以pageCount清零
-      dispatch(changeEnterLoading(true));//loading，现在实现控制逻辑，效果实现放到下一节，后面的loading同理
-      dispatch(getSingerList(category, alpha));
+    updateDispatch(type, area, initial) {
+      dispatch(changePageCount(0)); //由于改变了分类，所以pageCount清零
+      dispatch(changeEnterLoading(true)); //loading，现在实现控制逻辑，效果实现放到下一节，后面的loading同理
+      dispatch(getSingerList(type, area, initial));
     },
     // 滑到最底部刷新部分的处理
-    pullUpRefreshDispatch(category, alpha, hot, count) {
+    pullUpRefreshDispatch(type, area, initial, count, hot) {
       dispatch(changePullUpLoading(true));
-      dispatch(changePageCount(count + 1));
+      dispatch(changePageCount(count));
       if (hot) {
         dispatch(refreshMoreHotSingerList());
       } else {
-        dispatch(refreshMoreSingerList(category, alpha));
+        dispatch(refreshMoreSingerList(type, area, initial));
       }
     },
     //顶部下拉刷新
-    pullDownRefreshDispatch(category, alpha) {
+    pullDownRefreshDispatch(type, area, initial, hot) {
       dispatch(changePullDownLoading(true));
-      dispatch(changePageCount(0));//属于重新获取数据
-      if (category === '' && alpha === '') {
+      dispatch(changePageCount(0)); //属于重新获取数据
+      if (hot) {
         dispatch(getHotSingerList());
       } else {
-        dispatch(getSingerList(category, alpha));
+        dispatch(getSingerList(type, area, initial));
       }
-    }
-  }
+    },
+  };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Singers));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(React.memo(Singers));
